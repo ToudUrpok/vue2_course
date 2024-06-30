@@ -35,7 +35,7 @@
             >
                 <v-btn
                     :disabled="!valid"
-                    @click="addPhoto"
+                    @click="handleAddClick"
                 >
                     Add
                 </v-btn>
@@ -45,6 +45,8 @@
 </template>
 
 <script>
+import { mapMutations } from 'vuex';
+
 export default {
     name: 'addPhotoForm',
 
@@ -55,32 +57,34 @@ export default {
       title: '',
       titleRules: [
         v => !!v || 'Title is required',
-        v => v.length <= 20 || 'Title must be less than 20 characters',
+        v => v?.length <= 20 || 'Title must be less than 20 characters',
       ],
       photo: undefined,
     }),
 
     mounted() {
         this.fileReader = new FileReader()
-        this.fileReader.onload = () => {
+        this.fileReader.onload = this.handlePhotoLoad
+    },
+
+    methods: {
+        ...mapMutations(['addPhoto']),
+        handleAddClick() {
+            if (!this.valid) {
+                return
+            }
+            
+            this.fileReader.readAsDataURL(this.photo)
+        },
+        handlePhotoLoad() {
             const photo = {
                 id: Date.now(),
                 title: this.title,
                 url: this.fileReader.result
             }
 
-            this.$emit('addPhoto', photo)
+            this.addPhoto(photo)
         }
-    },
-
-    methods: {
-      addPhoto() {
-        if (!this.valid) {
-            return
-        }
-        
-        this.fileReader.readAsDataURL(this.photo)
-      }
     },
 };
 </script>

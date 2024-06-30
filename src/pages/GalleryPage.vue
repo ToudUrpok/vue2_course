@@ -1,17 +1,15 @@
 <template>
     <v-container>
-        <addPhotoForm @addPhoto="addPhoto"/>
+        <addPhotoForm />
         <v-row>
             <photoCard
-                v-for="photo in photos"
+                v-for="photo in $store.getters.getAllPhotos"
                 :photo="photo"
                 :key="photo.id"
-                @click="openPhotoDialog"
             />
         </v-row>
         <viewPhotoDialog
-            :photo="selectedPhoto"
-            v-model="dialog"
+
         />
     </v-container>
 </template>
@@ -20,6 +18,7 @@
 import photoCard from '@/components/gallery/PhotoCard'
 import addPhotoForm from '@/components/gallery/AddPhotoForm'
 import viewPhotoDialog from '@/components/gallery/ViewPhotoDialog'
+import { mapActions } from 'vuex';
 
 export default {
     name: 'GalleryPage',
@@ -29,9 +28,6 @@ export default {
     },
 
     data: () => ({
-        photos: [],
-        selectedPhoto: {},
-        dialog: false,
     }),
 
     mounted() {
@@ -39,20 +35,7 @@ export default {
     },
 
     methods: {
-        fetchPhotos() {
-            this.axios.get('https://jsonplaceholder.typicode.com/photos', {
-                params: {
-                    _limit: 10,
-                }
-            }).then(response => this.photos = response.data)
-        },
-        addPhoto(photo) {
-            this.photos.push(photo)
-        },
-        openPhotoDialog(photo) {
-            this.selectedPhoto = photo
-            this.dialog = true;
-        }
+        ...mapActions(['fetchPhotos']),
     }
 };
 </script>

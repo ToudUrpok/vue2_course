@@ -1,55 +1,32 @@
 <template>
     <v-dialog
-        v-model="isVisible"
+        v-model="getDialogVisibility"
         max-width="500"
+        @click:outside="hideDialog"
     >
         <v-card>
             <v-img
-                :src="photo.url"
+                :src="getSelectedPhoto.url"
             />
             <v-card-title>
-                {{ fullTitle }}
+                {{ getSelectedPhoto.title }}
             </v-card-title>
         </v-card>
     </v-dialog>
 </template>
 
 <script>
+import { mapGetters, mapMutations } from 'vuex';
+
 export default {
     name: 'viewPhotoDialog',
 
-    props: {
-        photo: {
-            type: Object,
-            required: true
-        },
-        value: {
-            type: Boolean,
-            default: false
-        }
-    },
-
-    created() {
-        this.isVisible = this.value
-    },
-
-    data: () => ({
-        isVisible: false
-    }),
-
-    watch: {
-        value(value) {
-            this.isVisible = value
-        },
-        isVisible(value) {
-            this.$emit('input', value)
-        }
+    methods: {
+        ...mapMutations(['hideDialog']),
     },
 
     computed: {
-        fullTitle() {
-            return `Photo Name: ${this.photo.title}`
-        }
+        ...mapGetters(['getSelectedPhoto', 'getDialogVisibility'])
     }
 };
 </script>

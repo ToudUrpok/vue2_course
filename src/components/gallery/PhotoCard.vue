@@ -15,6 +15,8 @@
 </template>
 
 <script>
+import { mapMutations } from 'vuex';
+
 export default {
     name: 'photoCard',
 
@@ -26,8 +28,9 @@ export default {
     },
 
     methods: {
+        ...mapMutations(['showDialog']),
         handleClick() {
-            this.$emit('click', this.photo)
+            this.showDialog(this.photo)
         }
     }
 };
